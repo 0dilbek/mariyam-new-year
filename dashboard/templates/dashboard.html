@@ -674,8 +674,9 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>{% if is_uzbek %}Sovg'a{% else %}Совға{% endif %}</th>
-                            <th>{% if is_uzbek %}Sana{% else %}Күни{% endif %}</th>
+                            <th>Совға</th>
+                            <th>IP Address</th>
+                            <th>Күни</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -684,16 +685,17 @@
                             <td>
                                 #{{ order.id }}
                                 {% if not order.is_viewed %}
-                                <span class="new-badge">{% if is_uzbek %}YANGI{% else %}ЖАҢА{% endif %}</span>
+                                <span class="new-badge">ЖАҢА</span>
                                 {% endif %}
                             </td>
                             <td><strong>{{ order.gift.name }}</strong></td>
+                            <td><code>{{ order.ip_address|default:"—" }}</code></td>
                             <td>{{ order.order_date|date:"d.m.Y H:i" }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="3" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
-                                {% if is_uzbek %}Hozircha buyurtmalar yo'q{% else %}Һәзирше буйыртпалар жоқ{% endif %}
+                            <td colspan="4" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
+                                Һәзирше буйыртпалар жоқ
                             </td>
                         </tr>
                         {% endfor %}

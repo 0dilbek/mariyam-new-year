@@ -13,6 +13,7 @@ class Order(models.Model):
     gift = models.ForeignKey(Gifts, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
     is_viewed = models.BooleanField(default=False)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
 
     def __str__(self):
         return f"Order {self.id} for {self.gift.name}"

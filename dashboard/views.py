@@ -10,6 +10,19 @@ import random
 
 def scan_qr(request):
     """Sovg'a berish"""
+    # IP addressni olish
+    ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+    if ip_address:
+        ip_address = ip_address.split(',')[0]
+    else:
+        ip_address = request.META.get('REMOTE_ADDR')
+    
+    # Agar bu IP dan avval sovg'a olingan bo'lsa
+    if Order.objects.filter(ip_address=ip_address).exists():
+        return render(request, 'qr_used.html', {
+            'message': 'Сиз бул сайттан аллақашан совға алыпсыз!'
+        })
+    
     # Mavjud sovg'alarni filterlash
     available_gifts = Gifts.objects.filter(
         count__gt=0
@@ -43,6 +56,7 @@ def scan_qr(request):
     
     request.session['gift_name'] = selected_gift.name
     request.session['gift_id'] = selected_gift.id
+    request.session['ip_address'] = ip_address
     
     # Sovg'a sahifasiga yo'naltirish
     return redirect('gift_reveal')
@@ -51,17 +65,19 @@ def gift_reveal(request):
     """Sovg'ani ko'rsatish sahifasi (gifts.html dizayni)"""
     gift_name = request.session.get('gift_name', None)
     gift_id = request.session.get('gift_id', None)
+    ip_address = request.session.get('ip_address', None)
     
     if not gift_name or not gift_id:
         return redirect('home')
     
     # Buyurtmani avtomatik yaratish
     gift = get_object_or_404(Gifts, id=gift_id)
-    order = Order.objects.create(gift=gift)
+    order = Order.objects.create(gift=gift, ip_address=ip_address)
     
     # Sessiyani tozalash
     request.session.pop('gift_name', None)
     request.session.pop('gift_id', None)
+    request.session.pop('ip_address', None)
     
     return render(request, 'gift_reveal.html', {
         'gift_name': gift_name,

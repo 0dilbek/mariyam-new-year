@@ -10,8 +10,8 @@ class GiftsAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'gift', 'order_date', 'is_viewed')
+    list_display = ('id', 'gift', 'order_date', 'is_viewed', 'ip_address')
     list_filter = ('order_date', 'is_viewed')
-    search_fields = ('gift__name',)
+    search_fields = ('gift__name', 'ip_address')
     readonly_fields = ('order_date',)
 
