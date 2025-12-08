@@ -249,7 +249,6 @@
         <div class="instruction">{{ t.click_to_open }}</div>
         <div class="gift-box" id="giftBox">
             <div class="glow"></div>
-            <img src="{% static 'logo/logo.png' %}" alt="Logo" class="gift-logo">
             <img src="{% static 'gift.png' %}" alt="{{ t.new_year_gift }}">
             
             <!-- The Gift Message Inside -->
@@ -271,6 +270,10 @@
                 </form>
             </div>
         </div>
+    </div>
+    <!-- Logo: gifts card top center -->
+    <div style="width:100%; display:flex; justify-content:center; margin-top:-40px; margin-bottom:10px;">
+        <img src="{% static 'logo/logo.png' %}" alt="Logo" style="width:80px; height:auto;">
     </div>
     
     <script>
