@@ -298,20 +298,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-
-    <!-- Language Switcher -->
-    <div class="language-switcher">
-        <form action="{% url 'set_language' %}" method="post">
-            {% csrf_token %}
-            <input name="next" type="hidden" value="{{ request.path }}">
-            <select name="language">
-                <option value="uz" {% if current_language == 'uz' %}selected{% endif %}>O'zbekcha</option>
-                <option value="kaa" {% if current_language == 'kaa' %}selected{% endif %}>Qaraqalpaqsha</option>
-            </select>
-            <button type="submit">OK</button>
-        </form>
-    </div>
-
     <div class="container">
         <div class="instruction">{{ t.click_to_open }}</div>
         <div class="gift-box" id="giftBox">

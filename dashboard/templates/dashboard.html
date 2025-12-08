@@ -534,20 +534,12 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>🎁 {% if is_uzbek %}Boshqaruv Paneli{% else %}Басқарыў Панели{% endif %}</h1>
+        <h1>🎁 Басқарыў Панели</h1>
         <div class="header-right">
-            <form action="{% url 'set_language' %}" method="post" style="margin: 0;">
-                {% csrf_token %}
-                <input name="next" type="hidden" value="{{ request.path }}">
-                <select name="language" onchange="this.form.submit()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">
-                    <option value="uz" {% if current_language == 'uz' %}selected{% endif %} style="background: #1a3a47; color: white;">O'zbekcha</option>
-                    <option value="kaa" {% if current_language == 'kaa' %}selected{% endif %} style="background: #1a3a47; color: white;">Qaraqalpaqsha</option>
-                </select>
-            </form>
             <div class="user-info">
                 <span>👤 {{ user.username }}</span>
             </div>
-            <a href="{% url 'admin_logout' %}" class="logout-btn">{% if is_uzbek %}Chiqish{% else %}Шығыў{% endif %}</a>
+            <a href="{% url 'admin_logout' %}" class="logout-btn">Шығыў</a>
         </div>
     </div>
 
