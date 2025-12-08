@@ -4,34 +4,17 @@ from django.db.models import Count, Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.files.base import ContentFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Gifts, Order, QRCode
+from .models import Gifts, Order
 import random
-import qrcode
-from io import BytesIO
-import uuid
 
-def scan_qr(request, token):
-    """QR kod skanerlanganda ishlaydigan view"""
-    qr_code = get_object_or_404(QRCode, token=token)
-    
-    # Agar QR kod allaqachon ishlatilgan bo'lsa
-    if not qr_code.available:
-        return render(request, 'qr_used.html', {
-            'message': 'Bu QR kod allaqachon ishlatilgan!'
-        })
-    
-    # QR kodni ishlatilgan deb belgilash
-    qr_code.available = False
-    qr_code.save()
-    
-    # Mavjud sovg'alarni order_number ga qarab filterlash
+def scan_qr(request):
+    """Sovg'a berish"""
+    # Mavjud sovg'alarni filterlash
     available_gifts = Gifts.objects.filter(
         count__gt=0
     )
     
-
     if not available_gifts.exists():
         return render(request, 'no_gifts.html', {
             'message': 'Afsuski, hozirda sovg\'alar tugab qoldi!'
@@ -125,8 +108,6 @@ def admin_dashboard(request):
     available_gifts = Gifts.objects.filter(count__gt=0).count()
     total_gifts_count = Gifts.objects.aggregate(total=Sum('count'))['total'] or 0
     total_orders = Order.objects.count()
-    total_qr_codes = QRCode.objects.count()
-    available_qr_codes = QRCode.objects.filter(available=True).count()
     
     # So'nggi buyurtmalar - pagination
     orders_list = Order.objects.select_related('gift').order_by('-order_date')
@@ -154,27 +135,13 @@ def admin_dashboard(request):
     except EmptyPage:
         all_gifts = gifts_paginator.page(gifts_paginator.num_pages)
     
-    # Barcha QR kodlar - pagination
-    qr_list = QRCode.objects.all().order_by('-id')
-    qr_paginator = Paginator(qr_list, 20)  # 20 per page
-    qr_page = request.GET.get('qr_page')
-    try:
-        all_qr_codes = qr_paginator.page(qr_page)
-    except PageNotAnInteger:
-        all_qr_codes = qr_paginator.page(1)
-    except EmptyPage:
-        all_qr_codes = qr_paginator.page(qr_paginator.num_pages)
-    
     context = {
         'total_gifts': total_gifts,
         'available_gifts': available_gifts,
         'total_gifts_count': total_gifts_count,
         'total_orders': total_orders,
-        'total_qr_codes': total_qr_codes,
-        'available_qr_codes': available_qr_codes,
         'recent_orders': recent_orders,
         'all_gifts': all_gifts,
-        'all_qr_codes': all_qr_codes,
     }
     
     return render(request, 'dashboard.html', context)
@@ -214,63 +181,6 @@ def update_gift_count(request, gift_id):
         gift.count = count
         gift.save()
         messages.success(request, 'Sovg\'a soni yangilandi!')
-    return redirect('admin_dashboard')
-
-@login_required(login_url='admin_login')
-def generate_qr_codes(request):
-    """Ko'p QR kodlarni yaratish"""
-    if request.method == 'POST':
-        count = int(request.POST.get('count', 1))
-        
-        # Base URL ni olish
-        base_url = request.build_absolute_uri('/scan/')
-        
-        created_count = 0
-        for _ in range(count):
-            # Noyob token yaratish
-            token = str(uuid.uuid4())
-            
-            # QR kod yaratish
-            qr_code_obj = QRCode.objects.create(token=token)
-            
-            # URL yaratish - token bilan
-            qr_url = f"{base_url}{token}/"
-            
-            # QR kod generatsiya qilish
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(qr_url)
-            qr.make(fit=True)
-            
-            # Rasm yaratish
-            img = qr.make_image(fill_color="black", back_color="white")
-            
-            # BytesIO ga saqlash
-            buffer = BytesIO()
-            img.save(buffer, format='PNG')
-            buffer.seek(0)
-            
-            # Faylni saqlash
-            filename = f'qr_code_{qr_code_obj.id}.png'
-            qr_code_obj.qr_image.save(filename, ContentFile(buffer.read()), save=True)
-            
-            created_count += 1
-        
-        messages.success(request, f'{created_count} ta QR kod muvaffaqiyatli yaratildi!')
-        return redirect('admin_dashboard')
-    
-    return redirect('admin_dashboard')
-
-@login_required(login_url='admin_login')
-def delete_qr_code(request, qr_id):
-    """QR kodni o'chirish"""
-    qr_code = get_object_or_404(QRCode, id=qr_id)
-    qr_code.delete()
-    messages.success(request, 'QR kod o\'chirildi!')
     return redirect('admin_dashboard')
 
 

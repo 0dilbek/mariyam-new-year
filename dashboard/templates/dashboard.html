@@ -581,11 +581,6 @@
                 <h3>{% if is_uzbek %}Barcha Buyurtmalar{% else %}Барлық Буйыртпалар{% endif %}</h3>
                 <div class="value">{{ total_orders }}</div>
             </div>
-            <div class="stat-card">
-                <div class="icon">📱</div>
-                <h3>QR {% if is_uzbek %}Kodlar{% else %}Кодлар{% endif %}</h3>
-                <div class="value">{{ available_qr_codes }}/{{ total_qr_codes }}</div>
-            </div>
         </div>
 
         <!-- Add Gift Section -->
@@ -661,8 +656,8 @@
             {% if all_gifts.has_other_pages %}
             <div class="pagination">
                 {% if all_gifts.has_previous %}
-                    <a href="?gifts_page=1&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">«</a>
-                    <a href="?gifts_page={{ all_gifts.previous_page_number }}&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">‹</a>
+                    <a href="?gifts_page=1&orders_page={{ recent_orders.number }}">«</a>
+                    <a href="?gifts_page={{ all_gifts.previous_page_number }}&orders_page={{ recent_orders.number }}">‹</a>
                 {% endif %}
 
                 <span class="current">
@@ -670,8 +665,8 @@
                 </span>
 
                 {% if all_gifts.has_next %}
-                    <a href="?gifts_page={{ all_gifts.next_page_number }}&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">›</a>
-                    <a href="?gifts_page={{ all_gifts.paginator.num_pages }}&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">»</a>
+                    <a href="?gifts_page={{ all_gifts.next_page_number }}&orders_page={{ recent_orders.number }}">›</a>
+                    <a href="?gifts_page={{ all_gifts.paginator.num_pages }}&orders_page={{ recent_orders.number }}">»</a>
                 {% endif %}
             </div>
             {% endif %}
@@ -718,8 +713,8 @@
             {% if recent_orders.has_other_pages %}
             <div class="pagination">
                 {% if recent_orders.has_previous %}
-                    <a href="?orders_page=1&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">«</a>
-                    <a href="?orders_page={{ recent_orders.previous_page_number }}&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">‹</a>
+                    <a href="?orders_page=1&gifts_page={{ all_gifts.number }}">«</a>
+                    <a href="?orders_page={{ recent_orders.previous_page_number }}&gifts_page={{ all_gifts.number }}">‹</a>
                 {% endif %}
 
                 <span class="current">
@@ -727,103 +722,8 @@
                 </span>
 
                 {% if recent_orders.has_next %}
-                    <a href="?orders_page={{ recent_orders.next_page_number }}&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">›</a>
-                    <a href="?orders_page={{ recent_orders.paginator.num_pages }}&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">»</a>
-                {% endif %}
-            </div>
-            {% endif %}
-        </div>
-        <div class="section">
-            <div class="section-header">
-                <h2>📱 QR {% if is_uzbek %}Kodlar Yaratish{% else %}Кодлар Жаратыў{% endif %}</h2>
-            </div>
-            <form method="POST" action="{% url 'generate_qr' %}" style="margin-bottom: 30px;">
-                {% csrf_token %}
-                <div style="display: flex; gap: 15px; align-items: end;">
-                    <div class="form-group" style="flex: 1;">
-                        <label for="count">{% if is_uzbek %}Nechta QR kod yaratmoqchisiz?{% else %}Неше QR код жаратпақшысыз?{% endif %}</label>
-                        <input type="number" id="count" name="count" placeholder="10" min="1" max="100" value="10" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">🎯 QR {% if is_uzbek %}Kodlar Yaratish{% else %}Кодлар Жаратыў{% endif %}</button>
-                </div>
-            </form>
-
-            <h3 style="margin-bottom: 15px; color: rgba(255,255,255,0.9); font-size: 18px;">{% if is_uzbek %}Mavjud QR Kodlar{% else %}Бар QR Кодлар{% endif %}</h3>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>QR {% if is_uzbek %}Kod{% else %}Код{% endif %}</th>
-                            <th>{% if is_uzbek %}Token{% else %}Токен{% endif %}</th>
-                            <th>{% if is_uzbek %}Havola{% else %}Силтеме{% endif %}</th>
-                            <th>{% if is_uzbek %}Status{% else %}Статус{% endif %}</th>
-                            <th>{% if is_uzbek %}Amallar{% else %}Әмеллер{% endif %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for qr in all_qr_codes %}
-                        <tr>
-                            <td>#{{ qr.id }}</td>
-                            <td>
-                                {% if qr.qr_image %}
-                                    <img src="{{ qr.qr_image.url }}" alt="QR Code" style="width: 80px; height: 80px;">
-                                {% else %}
-                                    <span style="color: rgba(255,255,255,0.6);">{% if is_uzbek %}Rasm yo'q{% else %}Сурет жоқ{% endif %}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <code>
-                                    {{ qr.token|slice:":16" }}...
-                                </code>
-                            </td>
-                            <td>
-                                <code>
-                                    {{ request.scheme }}://{{ request.get_host }}/scan/{{ qr.token }}/
-                                </code>
-                            </td>
-                            <td>
-                                {% if qr.available %}
-                                    <span class="badge badge-success">{% if is_uzbek %}Mavjud{% else %}Бар{% endif %}</span>
-                                {% else %}
-                                    <span class="badge badge-danger">{% if is_uzbek %}Ishlatilgan{% else %}Пайдаланылған{% endif %}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="actions">
-                                    {% if qr.qr_image %}
-                                        <a href="{{ qr.qr_image.url }}" download class="btn btn-success">{% if is_uzbek %}Yuklash{% else %}Жүклеў{% endif %}</a>
-                                    {% endif %}
-                                    <a href="{% url 'delete_qr' qr.id %}" class="btn btn-danger" onclick="return confirm('{% if is_uzbek %}Ishonchingiz komilmi?{% else %}Сенимлимисиз?{% endif %}')">{% if is_uzbek %}O'chirish{% else %}Өшириў{% endif %}</a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
-                                {% if is_uzbek %}Hozircha QR kodlar yo'q. Yuqorida yarating!{% else %}Һәзирше QR кодлар жоқ. Жоқарыда жаратың!{% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination for QR Codes -->
-            {% if all_qr_codes.has_other_pages %}
-            <div class="pagination">
-                {% if all_qr_codes.has_previous %}
-                    <a href="?qr_page=1&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">«</a>
-                    <a href="?qr_page={{ all_qr_codes.previous_page_number }}&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">‹</a>
-                {% endif %}
-
-                <span class="current">
-                    {{ all_qr_codes.number }} / {{ all_qr_codes.paginator.num_pages }}
-                </span>
-
-                {% if all_qr_codes.has_next %}
-                    <a href="?qr_page={{ all_qr_codes.next_page_number }}&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">›</a>
-                    <a href="?qr_page={{ all_qr_codes.paginator.num_pages }}&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">»</a>
+                    <a href="?orders_page={{ recent_orders.next_page_number }}&gifts_page={{ all_gifts.number }}">›</a>
+                    <a href="?orders_page={{ recent_orders.paginator.num_pages }}&gifts_page={{ all_gifts.number }}">»</a>
                 {% endif %}
             </div>
             {% endif %}
