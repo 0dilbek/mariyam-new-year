@@ -20,14 +20,23 @@ def scan_qr(request):
             'message': 'Afsuski, hozirda sovg\'alar tugab qoldi!'
         })
 
-    total_fund = Gifts.objects.filter(count__gt=0).aggregate(total=Sum('price'))['total'] or 0
-    weights = []
+    # Har bir sovg'ani count marta listga qo'shish - soni ko'p bo'lgan sovg'a ko'proq chiqadi
+    gifts_pool = []
     for gift in available_gifts:
-        weight = float(total_fund - gift.price + 1)  # Convert to float
-        weights.append(weight)
-
-    # Tasodifiy sovg'ani ehtimollar asosida tanlash
-    selected_gift = random.choices(list(available_gifts), weights=weights, k=1)[0]
+        # Arzon sovg'aga ko'proq ehtimol, qimmatga kamroq
+        # Narxi kam bo'lsa count*10, narxi baland bo'lsa count*1
+        max_price = max(float(g.price) for g in available_gifts)
+        min_price = min(float(g.price) for g in available_gifts)
+        price_range = max_price - min_price if max_price > min_price else 1
+        
+        # Narxi pastroq bo'lsa multiplier katta (1-10 oralig'ida)
+        multiplier = int(10 - (float(gift.price) - min_price) / price_range * 9)
+        
+        for _ in range(gift.count * multiplier):
+            gifts_pool.append(gift)
+    
+    # Tasodifiy birini tanlash
+    selected_gift = random.choice(gifts_pool)
 
     selected_gift.count -= 1
     selected_gift.save()
