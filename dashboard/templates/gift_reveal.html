@@ -20,6 +20,47 @@
             perspective: 1200px;
         }
 
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .language-switcher form {
+            display: flex;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .language-switcher select {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .language-switcher button {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .language-switcher button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,215,0,0.4);
+        }
+
         .container {
             position: relative;
             width: 300px;
@@ -257,6 +298,18 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
+
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <form method="POST" action="{% url 'change_language' %}">
+            {% csrf_token %}
+            <select name="language">
+                <option value="uz" {% if current_language == 'uz' %}selected{% endif %}>O'zbekcha</option>
+                <option value="kaa" {% if current_language == 'kaa' %}selected{% endif %}>Qaraqalpaqsha</option>
+            </select>
+            <button type="submit">{{ t.change }}</button>
+        </form>
+    </div>
 
     <div class="container">
         <div class="instruction">{{ t.click_to_open }}</div>
