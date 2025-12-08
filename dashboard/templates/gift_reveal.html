@@ -101,6 +101,7 @@
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             padding: 30px;
+            padding-top: 100px;
             box-sizing: border-box;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -117,6 +118,21 @@
             z-index: 1000;
             box-shadow: 0 25px 60px rgba(0,0,0,0.6);
             pointer-events: all;
+        }
+
+        #logoAfterOpen {
+            display: none;
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: auto;
+            z-index: 1001;
+        }
+
+        .gift-box.exploded #logoAfterOpen {
+            display: block;
         }
 
         #logoAfterOpen {
@@ -245,16 +261,7 @@
             }
         }
 
-        /* Logo Styles */
-        .gift-logo {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: auto;
-            z-index: 2;
-        }
+
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -268,9 +275,7 @@
             
             <!-- The Gift Message Inside -->
             <div class="message-paper">
-                <div style="width:100%; display:flex; justify-content:center; margin-bottom:10px;">
-                    <img src="{% static 'logo/logo.png' %}" alt="Logo" id="logoAfterOpen" style="width:80px; height:auto; display:none;">
-                </div>
+                <img src="{% static 'logo/logo.png' %}" alt="Logo" id="logoAfterOpen">
                 <div class="gift-title">🎄 {{ t.happy_new_year }} 🎄</div>
                 <div class="gift-name" id="giftName">{{ gift_name }}</div>
                 <div style="font-size: 30px; margin: 15px 0;">🎁✨🎉</div>
@@ -288,10 +293,6 @@
                 </form>
             </div>
         </div>
-    </div>
-    <!-- Logo: gifts card top center -->
-    <div style="width:100%; display:flex; justify-content:center; margin-top:-40px; margin-bottom:10px;">
-        <img src="{% static 'logo/logo.png' %}" alt="Logo" style="width:80px; height:auto;">
     </div>
     
     <script>
@@ -314,8 +315,6 @@
             isOpen = true;
             giftBox.classList.add('exploded');
             instruction.style.opacity = '0';
-            // Logo ni ko'rsatish
-            document.getElementById('logoAfterOpen').style.display = 'block';
             // Confetti explosion
             const duration = 3000;
             const end = Date.now() + duration;
