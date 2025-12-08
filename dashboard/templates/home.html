@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_uzbek %}Yangi yil sovg'alari{% else %}Jaña jıl sowğaları{% endif %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+        }
+
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .language-switcher form {
+            display: flex;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .language-switcher select {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .language-switcher button {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255,215,0,0.8);
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        /* Snow Effect */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10%;
+                opacity: 0.8;
+            }
+            100% {
+                top: 110%;
+                opacity: 0.2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-switcher">
+        <form action="{% url 'set_language' %}" method="post">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}">
+            <select name="language">
+                <option value="uz" {% if current_language == 'uz' %}selected{% endif %}>O'zbekcha</option>
+                <option value="kaa" {% if current_language == 'kaa' %}selected{% endif %}>Qaraqalpaqsha</option>
+            </select>
+            <button type="submit">OK</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="icon">🎄</div>
+        <h1>{% if is_uzbek %}Xush kelibsiz!{% else %}Qosh keldiñiz!{% endif %}</h1>
+        <p>{% if is_uzbek %}Yangi yil sovg'alarini olish uchun QR kodni skaner qiling.{% else %}Jaña jıl sowğaların alıw úshin QR kodnı skanerlең.{% endif %}</p>
+        <p style="margin-top: 30px; font-size: 60px;">🎁✨🎉</p>
+    </div>
+
+    <script>
+        // Snow Effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+            snowflake.style.fontSize = Math.random() * 15 + 10 + 'px';
+            
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 8000);
+        }
+
+        setInterval(createSnowflake, 200);
+    </script>
+</body>
+</html>

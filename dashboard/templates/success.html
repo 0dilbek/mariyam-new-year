@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_uzbek %}Muvaffaqiyatli!{% else %}Муваффақийетли!{% endif %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            padding: 50px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 500px;
+        }
+
+        h1 {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 42px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255,215,0,0.8);
+            color: #ffd700;
+        }
+
+        .gift-info {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .gift-info h2 {
+            color: #1976d2;
+            margin: 0 0 15px 0;
+            font-size: 28px;
+        }
+
+        .gift-info p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .note {
+            background: rgba(255,215,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid rgba(255,215,0,0.4);
+        }
+
+        /* Snow Effect */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10%;
+                opacity: 0.8;
+            }
+            100% {
+                top: 110%;
+                opacity: 0.2;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🎉</div>
+        <h1>{% if is_uzbek %}Tabriklaymiz!{% else %}Қуттықтаймыз!{% endif %}</h1>
+        
+        <div class="gift-info">
+            <h2>{{ order.gift.name }}</h2>
+            <p><strong>{% if is_uzbek %}Buyurtma raqami:{% else %}Буйыртпа номери:{% endif %}</strong> #{{ order.id }}</p>
+            <p><strong>{% if is_uzbek %}Ism:{% else %}Аты:{% endif %}</strong> {{ order.customer_name }}</p>
+            <p><strong>{% if is_uzbek %}Telefon:{% else %}Телефон:{% endif %}</strong> {{ order.customer_phone }}</p>
+        </div>
+
+        <div class="note">
+            <p><strong>💡 {% if is_uzbek %}Eslatma:{% else %}Ескертпе:{% endif %}</strong></p>
+            <p>{% if is_uzbek %}Sovg'angizni olish uchun tez orada siz bilan bog'lanamiz!{% else %}Совғаңызды алыў үшин тез орада сиз бенен байланысамыз!{% endif %}</p>
+        </div>
+
+        <p style="margin-top: 30px; font-size: 50px;">🎁✨🎄</p>
+    </div>
+
+    <script>
+        // Confetti celebration
+        function celebrate() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+            }, 300);
+        }
+
+        celebrate();
+        
+        // Snow Effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+            snowflake.style.fontSize = Math.random() * 15 + 10 + 'px';
+            
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 8000);
+        }
+
+        setInterval(createSnowflake, 200);
+    </script>
+</body>
+</html>

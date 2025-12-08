@@ -1,0 +1,341 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_uzbek %}Yangi Yil Sovg'asi{% else %}Жаңа Жыл Совғасы{% endif %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        .container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .instruction {
+            position: absolute;
+            top: -120px;
+            color: #fff;
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 32px;
+            text-align: center;
+            width: 100%;
+            text-shadow: 0 0 15px rgba(255,215,0,0.8);
+            animation: float 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Gift Box Image Styles */
+        .gift-box {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+        }
+
+        .gift-box:hover {
+            transform: scale(1.08);
+            filter: drop-shadow(0 25px 40px rgba(0,0,0,0.6));
+        }
+        
+        .gift-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .gift-box.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.05) rotate(5deg); }
+            50% { transform: scale(1.05) rotate(-5deg); }
+            75% { transform: scale(1.05) rotate(5deg); }
+        }
+
+        .gift-box.exploded {
+            cursor: default;
+            filter: none;
+        }
+
+        .gift-box.exploded img {
+            opacity: 0;
+            transform: scale(0) rotate(720deg);
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Paper Message */
+        .message-paper {
+            position: absolute;
+            width: 280px;
+            height: auto;
+            background: #fff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            opacity: 0;
+            transition: all 0.6s ease-in-out 0.6s;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .gift-box.exploded .message-paper {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            z-index: 1000;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            pointer-events: all;
+        }
+
+        .gift-title {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 28px;
+            color: #d32f2f;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .gift-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #1976d2;
+            padding: 15px;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .claim-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .claim-btn {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Mountains of Christmas', cursive;
+        }
+
+        .claim-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.4);
+        }
+
+        .claim-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Glow Effect */
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,215,0,0.4), transparent 70%);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        /* Snow Effect */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10%;
+                opacity: 0.8;
+            }
+            100% {
+                top: 110%;
+                opacity: 0.2;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="instruction">{% if is_uzbek %}Sovg'ani ochish uchun bosing!{% else %}Совғаны ашыў үшин басың!{% endif %}</div>
+        <div class="gift-box" id="giftBox">
+            <div class="glow"></div>
+            <img src="{% static 'gift.png' %}" alt="{% if is_uzbek %}Yangi Yil Sovg'asi{% else %}Жаңа Жыл Совғасы{% endif %}">
+            
+            <!-- The Gift Message Inside -->
+            <div class="message-paper">
+                <div class="gift-title">🎄 {% if is_uzbek %}Yangi Yilingiz Bilan!{% else %}Жаңа Жылыңыз Бенен!{% endif %} 🎄</div>
+                <div class="gift-name" id="giftName">{{ gift_name }}</div>
+                <div style="font-size: 30px; margin: 15px 0;">🎁✨🎉</div>
+                
+                <!-- Мағлу́мат алыў формасы -->
+                <form method="POST" action="{% url 'claim_gift' %}" class="claim-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="customer_name" placeholder="{% if is_uzbek %}Ismingiz{% else %}Атыңыз{% endif %}" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="customer_phone" placeholder="{% if is_uzbek %}Telefon raqamingiz{% else %}Телефон номериңиз{% endif %}" required>
+                    </div>
+                    <button type="submit" class="claim-btn">{% if is_uzbek %}Sovg'ani Olish!{% else %}Совғаны Алыў!{% endif %} 🎁</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const giftBox = document.getElementById('giftBox');
+        const instruction = document.querySelector('.instruction');
+        let isOpen = false;
+
+        giftBox.addEventListener('click', () => {
+            if (isOpen) return;
+            
+            giftBox.classList.add('shake');
+            
+            setTimeout(() => {
+                giftBox.classList.remove('shake');
+                openGift();
+            }, 500);
+        });
+
+        function openGift() {
+            isOpen = true;
+            giftBox.classList.add('exploded');
+            instruction.style.opacity = '0';
+
+            // Confetti explosion
+            const duration = 3000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 7,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#bb0000', '#ffffff', '#ffd700', '#00ff00']
+                });
+                confetti({
+                    particleCount: 7,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#bb0000', '#ffffff', '#ffd700', '#00ff00']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                    colors: ['#FFD700', '#FF0000', '#FFFFFF', '#008000'],
+                    scalar: 1.2
+                });
+            }, 300);
+        }
+
+        // Snow Effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+            snowflake.style.fontSize = Math.random() * 15 + 10 + 'px';
+            
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 8000);
+        }
+
+        setInterval(createSnowflake, 200);
+    </script>
+</body>
+</html>

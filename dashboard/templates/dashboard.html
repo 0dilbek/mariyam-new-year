@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_uzbek %}Boshqaruv Paneli{% else %}Басқарыў Панели{% endif %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .header h1 {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 25px;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+
+        .stat-card .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .section-header h2 {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Add Gift Form */
+        .add-gift-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(255,215,0,0.8);
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #333;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #ee3344;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #26de81;
+            color: white;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        .btn-success:hover {
+            background: #20bf6b;
+            transform: translateY(-2px);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(255,255,255,0.2);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        th {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(38, 222, 129, 0.3);
+            color: #26de81;
+            border: 1px solid #26de81;
+        }
+
+        .badge-danger {
+            background: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+            border: 1px solid #ff4757;
+        }
+
+        .new-order {
+            background: rgba(255, 193, 7, 0.15) !important;
+            border-left: 4px solid #ffc107;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .new-badge {
+            background: #ffc107;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-success {
+            background: rgba(38, 222, 129, 0.3);
+            color: #26de81;
+            border: 2px solid #26de81;
+        }
+
+        .alert-error {
+            background: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+            border: 2px solid #ff4757;
+        }
+
+        code {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 25px;
+            padding: 20px 15px;
+        }
+
+        .pagination a {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.15);
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 0 12px;
+        }
+
+        .pagination a:hover {
+            background: rgba(255,215,0,0.2);
+            border-color: rgba(255,215,0,0.4);
+            color: #ffd700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,215,0,0.2);
+        }
+
+        .pagination .current {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+            color: #1a1a1a;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 2px solid #ffed4e;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+            padding: 0 12px;
+        }
+
+        .pagination .disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Snow Effect */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+        }
+
+        .pagination a, .pagination span {
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+
+        .pagination a:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .pagination .current {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #333;
+            font-weight: 600;
+            border-color: #ffd700;
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Snow Effect */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10%;
+                opacity: 0.8;
+            }
+            100% {
+                top: 110%;
+                opacity: 0.2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .add-gift-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .header-right {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .header-right form {
+                width: 100%;
+            }
+
+            .header-right select {
+                width: 100%;
+            }
+
+            .header-right select option {
+                background: #2c5364;
+                color: white;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 600px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+
+            .actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .section {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🎁 {% if is_uzbek %}Boshqaruv Paneli{% else %}Басқарыў Панели{% endif %}</h1>
+        <div class="header-right">
+            <form action="{% url 'set_language' %}" method="post" style="margin: 0;">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.path }}">
+                <select name="language" onchange="this.form.submit()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                    <option value="uz" {% if current_language == 'uz' %}selected{% endif %} style="background: #1a3a47; color: white;">O'zbekcha</option>
+                    <option value="kaa" {% if current_language == 'kaa' %}selected{% endif %} style="background: #1a3a47; color: white;">Qaraqalpaqsha</option>
+                </select>
+            </form>
+            <div class="user-info">
+                <span>👤 {{ user.username }}</span>
+            </div>
+            <a href="{% url 'admin_logout' %}" class="logout-btn">{% if is_uzbek %}Chiqish{% else %}Шығыў{% endif %}</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {% if message.tags == 'success' %}✅{% else %}❌{% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">🎁</div>
+                <h3>{% if is_uzbek %}Jami Sovg'alar{% else %}Барлық Совғалар{% endif %}</h3>
+                <div class="value">{{ total_gifts }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">✅</div>
+                <h3>{% if is_uzbek %}Mavjud Sovg'alar{% else %}Бар Совғалар{% endif %}</h3>
+                <div class="value">{{ available_gifts }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📦</div>
+                <h3>{% if is_uzbek %}Barcha Buyurtmalar{% else %}Барлық Буйыртпалар{% endif %}</h3>
+                <div class="value">{{ total_orders }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📱</div>
+                <h3>QR {% if is_uzbek %}Kodlar{% else %}Кодлар{% endif %}</h3>
+                <div class="value">{{ available_qr_codes }}/{{ total_qr_codes }}</div>
+            </div>
+        </div>
+
+        <!-- Add Gift Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2>➕ {% if is_uzbek %}Yangi Sovg'a Qo'shish{% else %}Жаңа Совға Қосыў{% endif %}</h2>
+            </div>
+            <form method="POST" action="{% url 'add_gift' %}" class="add-gift-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">{% if is_uzbek %}Sovg'a nomi{% else %}Совға аты{% endif %}</label>
+                    <input type="text" id="name" name="name" placeholder="{% if is_uzbek %}Masalan: iPhone 15 Pro{% else %}Мысалы: iPhone 15 Pro{% endif %}" required>
+                </div>
+                <div class="form-group">
+                    <label for="order_number">{% if is_uzbek %}Buyurtma raqami (chegara){% else %}Буйыртпа номери (шекара){% endif %}</label>
+                    <input type="number" id="order_number" name="order_number" placeholder="10" required>
+                </div>
+                <button type="submit" class="btn btn-primary">➕ {% if is_uzbek %}Qo'shish{% else %}Қосыў{% endif %}</button>
+            </form>
+        </div>
+
+        <!-- Gifts List -->
+        <div class="section">
+            <div class="section-header">
+                <h2>🎁 {% if is_uzbek %}Sovg'alar Ro'yxati{% else %}Совғалар Тизими{% endif %}</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{% if is_uzbek %}Nomi{% else %}Аты{% endif %}</th>
+                            <th>{% if is_uzbek %}Buyurtma raqami{% else %}Буйыртпа номери{% endif %}</th>
+                            <th>{% if is_uzbek %}Status{% else %}Статус{% endif %}</th>
+                            <th>{% if is_uzbek %}Amallar{% else %}Әмеллер{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gift in all_gifts %}
+                        <tr>
+                            <td>{{ gift.id }}</td>
+                            <td><strong>{{ gift.name }}</strong></td>
+                            <td>{{ gift.order_number }}</td>
+                            <td>
+                                {% if gift.available %}
+                                    <span class="badge badge-success">{% if is_uzbek %}Mavjud{% else %}Бар{% endif %}</span>
+                                {% else %}
+                                    <span class="badge badge-danger">{% if is_uzbek %}Berilgan{% else %}Берилген{% endif %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{% url 'toggle_gift' gift.id %}" class="btn {% if gift.available %}btn-danger{% else %}btn-success{% endif %}">
+                                        {% if gift.available %}{% if is_uzbek %}Bekor{% else %}Бекар{% endif %}{% else %}{% if is_uzbek %}Qayta{% else %}Қайта{% endif %}{% endif %}
+                                    </a>
+                                    <a href="{% url 'delete_gift' gift.id %}" class="btn btn-danger" onclick="return confirm('{% if is_uzbek %}Ishonchingiz komilmi?{% else %}Сенимлимисиз?{% endif %}')">{% if is_uzbek %}O'chirish{% else %}Өшириў{% endif %}</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
+                                {% if is_uzbek %}Hozircha sovg'alar yo'q. Yuqorida yangi sovg'a qo'shing!{% else %}Һәзирше совғалар жоқ. Жоқарыда жаңа совға қосың!{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination for Gifts -->
+            {% if all_gifts.has_other_pages %}
+            <div class="pagination">
+                {% if all_gifts.has_previous %}
+                    <a href="?gifts_page=1&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">«</a>
+                    <a href="?gifts_page={{ all_gifts.previous_page_number }}&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">‹</a>
+                {% endif %}
+
+                <span class="current">
+                    {{ all_gifts.number }} / {{ all_gifts.paginator.num_pages }}
+                </span>
+
+                {% if all_gifts.has_next %}
+                    <a href="?gifts_page={{ all_gifts.next_page_number }}&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">›</a>
+                    <a href="?gifts_page={{ all_gifts.paginator.num_pages }}&orders_page={{ recent_orders.number }}&qr_page={{ all_qr_codes.number }}">»</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="section">
+            <div class="section-header">
+                <h2>📦 {% if is_uzbek %}So'nggi Buyurtmalar{% else %}Соңғы Буйыртпалар{% endif %}</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{% if is_uzbek %}Mijoz nomi{% else %}Мийман аты{% endif %}</th>
+                            <th>{% if is_uzbek %}Telefon{% else %}Телефон{% endif %}</th>
+                            <th>{% if is_uzbek %}Sovg'a{% else %}Совға{% endif %}</th>
+                            <th>{% if is_uzbek %}Sana{% else %}Күни{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr {% if not order.is_viewed %}class="new-order"{% endif %}>
+                            <td>
+                                #{{ order.id }}
+                                {% if not order.is_viewed %}
+                                <span class="new-badge">{% if is_uzbek %}YANGI{% else %}ЖАҢА{% endif %}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ order.customer_name }}</td>
+                            <td>{{ order.customer_phone }}</td>
+                            <td><strong>{{ order.gift.name }}</strong></td>
+                            <td>{{ order.order_date|date:"d.m.Y H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
+                                {% if is_uzbek %}Hozircha buyurtmalar yo'q{% else %}Һәзирше буйыртпалар жоқ{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination for Orders -->
+            {% if recent_orders.has_other_pages %}
+            <div class="pagination">
+                {% if recent_orders.has_previous %}
+                    <a href="?orders_page=1&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">«</a>
+                    <a href="?orders_page={{ recent_orders.previous_page_number }}&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">‹</a>
+                {% endif %}
+
+                <span class="current">
+                    {{ recent_orders.number }} / {{ recent_orders.paginator.num_pages }}
+                </span>
+
+                {% if recent_orders.has_next %}
+                    <a href="?orders_page={{ recent_orders.next_page_number }}&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">›</a>
+                    <a href="?orders_page={{ recent_orders.paginator.num_pages }}&gifts_page={{ all_gifts.number }}&qr_page={{ all_qr_codes.number }}">»</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="section">
+            <div class="section-header">
+                <h2>📱 QR {% if is_uzbek %}Kodlar Yaratish{% else %}Кодлар Жаратыў{% endif %}</h2>
+            </div>
+            <form method="POST" action="{% url 'generate_qr' %}" style="margin-bottom: 30px;">
+                {% csrf_token %}
+                <div style="display: flex; gap: 15px; align-items: end;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="count">{% if is_uzbek %}Nechta QR kod yaratmoqchisiz?{% else %}Неше QR код жаратпақшысыз?{% endif %}</label>
+                        <input type="number" id="count" name="count" placeholder="10" min="1" max="100" value="10" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">🎯 QR {% if is_uzbek %}Kodlar Yaratish{% else %}Кодлар Жаратыў{% endif %}</button>
+                </div>
+            </form>
+
+            <h3 style="margin-bottom: 15px; color: rgba(255,255,255,0.9); font-size: 18px;">{% if is_uzbek %}Mavjud QR Kodlar{% else %}Бар QR Кодлар{% endif %}</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>QR {% if is_uzbek %}Kod{% else %}Код{% endif %}</th>
+                            <th>{% if is_uzbek %}Token{% else %}Токен{% endif %}</th>
+                            <th>{% if is_uzbek %}Havola{% else %}Силтеме{% endif %}</th>
+                            <th>{% if is_uzbek %}Status{% else %}Статус{% endif %}</th>
+                            <th>{% if is_uzbek %}Amallar{% else %}Әмеллер{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for qr in all_qr_codes %}
+                        <tr>
+                            <td>#{{ qr.id }}</td>
+                            <td>
+                                {% if qr.qr_image %}
+                                    <img src="{{ qr.qr_image.url }}" alt="QR Code" style="width: 80px; height: 80px;">
+                                {% else %}
+                                    <span style="color: rgba(255,255,255,0.6);">{% if is_uzbek %}Rasm yo'q{% else %}Сурет жоқ{% endif %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <code>
+                                    {{ qr.token|slice:":16" }}...
+                                </code>
+                            </td>
+                            <td>
+                                <code>
+                                    {{ request.scheme }}://{{ request.get_host }}/scan/{{ qr.token }}/
+                                </code>
+                            </td>
+                            <td>
+                                {% if qr.available %}
+                                    <span class="badge badge-success">{% if is_uzbek %}Mavjud{% else %}Бар{% endif %}</span>
+                                {% else %}
+                                    <span class="badge badge-danger">{% if is_uzbek %}Ishlatilgan{% else %}Пайдаланылған{% endif %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    {% if qr.qr_image %}
+                                        <a href="{{ qr.qr_image.url }}" download class="btn btn-success">{% if is_uzbek %}Yuklash{% else %}Жүклеў{% endif %}</a>
+                                    {% endif %}
+                                    <a href="{% url 'delete_qr' qr.id %}" class="btn btn-danger" onclick="return confirm('{% if is_uzbek %}Ishonchingiz komilmi?{% else %}Сенимлимисиз?{% endif %}')">{% if is_uzbek %}O'chirish{% else %}Өшириў{% endif %}</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
+                                {% if is_uzbek %}Hozircha QR kodlar yo'q. Yuqorida yarating!{% else %}Һәзирше QR кодлар жоқ. Жоқарыда жаратың!{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination for QR Codes -->
+            {% if all_qr_codes.has_other_pages %}
+            <div class="pagination">
+                {% if all_qr_codes.has_previous %}
+                    <a href="?qr_page=1&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">«</a>
+                    <a href="?qr_page={{ all_qr_codes.previous_page_number }}&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">‹</a>
+                {% endif %}
+
+                <span class="current">
+                    {{ all_qr_codes.number }} / {{ all_qr_codes.paginator.num_pages }}
+                </span>
+
+                {% if all_qr_codes.has_next %}
+                    <a href="?qr_page={{ all_qr_codes.next_page_number }}&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">›</a>
+                    <a href="?qr_page={{ all_qr_codes.paginator.num_pages }}&gifts_page={{ all_gifts.number }}&orders_page={{ recent_orders.number }}">»</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Snow effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+            snowflake.style.left = Math.random() * window.innerWidth + 'px';
+            snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
+            snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+            
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => {
+                snowflake.remove();
+            }, 10000);
+        }
+
+        setInterval(createSnowflake, 200);
+    </script>
+</body>
+</html>
