@@ -50,12 +50,22 @@ def scan_qr(request):
 def gift_reveal(request):
     """Sovg'ani ko'rsatish sahifasi (gifts.html dizayni)"""
     gift_name = request.session.get('gift_name', None)
+    gift_id = request.session.get('gift_id', None)
     
-    if not gift_name:
+    if not gift_name or not gift_id:
         return redirect('home')
     
+    # Buyurtmani avtomatik yaratish
+    gift = get_object_or_404(Gifts, id=gift_id)
+    order = Order.objects.create(gift=gift)
+    
+    # Sessiyani tozalash
+    request.session.pop('gift_name', None)
+    request.session.pop('gift_id', None)
+    
     return render(request, 'gift_reveal.html', {
-        'gift_name': gift_name
+        'gift_name': gift_name,
+        'order_id': order.id
     })
 
 def claim_gift(request):

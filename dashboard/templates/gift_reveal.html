@@ -324,12 +324,9 @@
                 <div class="gift-title">🎄 {{ t.happy_new_year }} 🎄</div>
                 <div class="gift-name" id="giftName">{{ gift_name }}</div>
                 <div style="font-size: 30px; margin: 15px 0;">🎁✨🎉</div>
-                
-                <!-- Claim button without form -->
-                <form method="POST" action="{% url 'claim_gift' %}" class="claim-form">
-                    {% csrf_token %}
-                    <button type="submit" class="claim-btn">{{ t.claim_gift }} 🎁</button>
-                </form>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(25, 118, 210, 0.1); border-radius: 10px; border: 2px solid rgba(25, 118, 210, 0.3);">
+                    <p style="margin: 0; font-size: 16px; color: #1976d2; font-weight: 600;">{{ t.order_id }}: #{{ order_id }}</p>
+                </div>
             </div>
         </div>
     </div>
