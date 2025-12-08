@@ -249,10 +249,13 @@
         <div class="instruction">{{ t.click_to_open }}</div>
         <div class="gift-box" id="giftBox">
             <div class="glow"></div>
-            <img src="{% static 'gift.png' %}" alt="{{ t.new_year_gift }}">
+            <img src="{% static 'gift.png' %}" alt="{{ t.new_year_gift }}" id="giftBoxImage">
             
             <!-- The Gift Message Inside -->
             <div class="message-paper">
+                <div style="width:100%; display:flex; justify-content:center; margin-bottom:10px;">
+                    <img src="{% static 'logo/logo.png' %}" alt="Logo" id="logoAfterOpen" style="width:80px; height:auto; display:none;">
+                </div>
                 <div class="gift-title">🎄 {{ t.happy_new_year }} 🎄</div>
                 <div class="gift-name" id="giftName">{{ gift_name }}</div>
                 <div style="font-size: 30px; margin: 15px 0;">🎁✨🎉</div>
@@ -296,7 +299,8 @@
             isOpen = true;
             giftBox.classList.add('exploded');
             instruction.style.opacity = '0';
-
+            // Logo ni ko'rsatish
+            document.getElementById('logoAfterOpen').style.display = 'block';
             // Confetti explosion
             const duration = 3000;
             const end = Date.now() + duration;
