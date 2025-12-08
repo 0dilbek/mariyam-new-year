@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jsg(nehiyt^6lvwn*98p=m$d!$!so71$wi#y=fs@&qoi&n$ihq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["mariyam-new-year.uz", "www.mariyam-new-year.uz", "127.0.0.1"]
 

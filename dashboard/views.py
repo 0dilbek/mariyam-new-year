@@ -270,3 +270,19 @@ def delete_qr_code(request, qr_id):
     qr_code.delete()
     messages.success(request, 'QR kod o\'chirildi!')
     return redirect('admin_dashboard')
+
+
+# Custom Error Handlers
+def custom_404(request, exception):
+    """404 - Sahifa topilmadi"""
+    return render(request, '404.html', status=404)
+
+
+def custom_500(request):
+    """500 - Server xatosi"""
+    return render(request, '500.html', status=500)
+
+
+def custom_403(request, exception):
+    """403 - Ruxsat yo'q"""
+    return render(request, '403.html', status=403)
