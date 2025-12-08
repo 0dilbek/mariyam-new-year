@@ -23,7 +23,7 @@ def scan_qr(request):
     total_fund = Gifts.objects.filter(count__gt=0).aggregate(total=Sum('price'))['total'] or 0
     weights = []
     for gift in available_gifts:
-        weight = (total_fund - gift.price + 1)  # +1 to avoid zero probability
+        weight = float(total_fund - gift.price + 1)  # Convert to float
         weights.append(weight)
 
     # Tasodifiy sovg'ani ehtimollar asosida tanlash
