@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if is_uzbek %}Admin paneli - kirish{% else %}Basqarıw paneli - kiriw{% endif %}</title>
+    <title>{{ t.admin_login }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -212,8 +212,8 @@
     <div class="login-container">
         <div class="logo">
             <div class="icon">🎁</div>
-            <h1>{% if is_uzbek %}Admin panel{% else %}Basqarıw paneli{% endif %}</h1>
-            <p>{% if is_uzbek %}Yangi yil sovg'alari tizimi{% else %}Jaña jıl sowğaları sisteması{% endif %}</p>
+            <h1>{{ t.admin_panel }}</h1>
+            <p>{{ t.new_year_system }}</p>
         </div>
 
         {% if messages %}
@@ -227,16 +227,16 @@
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
-                <label for="username">👤 {% if is_uzbek %}Login{% else %}Login{% endif %}</label>
-                <input type="text" id="username" name="username" placeholder="{% if is_uzbek %}Loginni kiriting{% else %}Logindi еngiziñ{% endif %}" required autofocus>
+                <label for="username">👤 {{ t.login }}</label>
+                <input type="text" id="username" name="username" placeholder="{{ t.enter_login }}" required autofocus>
             </div>
 
             <div class="form-group">
-                <label for="password">🔒 {% if is_uzbek %}Parol{% else %}Parol{% endif %}</label>
-                <input type="password" id="password" name="password" placeholder="{% if is_uzbek %}Parolni kiriting{% else %}Paroldi еngiziñ{% endif %}" required>
+                <label for="password">🔒 {{ t.password }}</label>
+                <input type="password" id="password" name="password" placeholder="{{ t.enter_password }}" required>
             </div>
 
-            <button type="submit" class="login-btn">{% if is_uzbek %}Kirish{% else %}Kiriw{% endif %}</button>
+            <button type="submit" class="login-btn">{{ t.enter }}</button>
         </form>
     </div>
 

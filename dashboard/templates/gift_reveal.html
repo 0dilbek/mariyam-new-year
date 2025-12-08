@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if is_uzbek %}Yangi Yil Sovg'asi{% else %}Жаңа Жыл Совғасы{% endif %}</title>
+    <title>{{ t.new_year_gift }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -235,14 +235,14 @@
 <body>
 
     <div class="container">
-        <div class="instruction">{% if is_uzbek %}Sovg'ani ochish uchun bosing!{% else %}Совғаны ашыў үшин басың!{% endif %}</div>
+        <div class="instruction">{{ t.click_to_open }}</div>
         <div class="gift-box" id="giftBox">
             <div class="glow"></div>
-            <img src="{% static 'gift.png' %}" alt="{% if is_uzbek %}Yangi Yil Sovg'asi{% else %}Жаңа Жыл Совғасы{% endif %}">
+            <img src="{% static 'gift.png' %}" alt="{{ t.new_year_gift }}">
             
             <!-- The Gift Message Inside -->
             <div class="message-paper">
-                <div class="gift-title">🎄 {% if is_uzbek %}Yangi Yilingiz Bilan!{% else %}Жаңа Жылыңыз Бенен!{% endif %} 🎄</div>
+                <div class="gift-title">🎄 {{ t.happy_new_year }} 🎄</div>
                 <div class="gift-name" id="giftName">{{ gift_name }}</div>
                 <div style="font-size: 30px; margin: 15px 0;">🎁✨🎉</div>
                 
@@ -250,12 +250,12 @@
                 <form method="POST" action="{% url 'claim_gift' %}" class="claim-form">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="text" name="customer_name" placeholder="{% if is_uzbek %}Ismingiz{% else %}Атыңыз{% endif %}" required>
+                        <input type="text" name="customer_name" placeholder="{{ t.your_name }}" required>
                     </div>
                     <div class="form-group">
-                        <input type="tel" name="customer_phone" placeholder="{% if is_uzbek %}Telefon raqamingiz{% else %}Телефон номериңиз{% endif %}" required>
+                        <input type="tel" name="customer_phone" placeholder="{{ t.your_phone }}" required>
                     </div>
-                    <button type="submit" class="claim-btn">{% if is_uzbek %}Sovg'ani Olish!{% else %}Совғаны Алыў!{% endif %} 🎁</button>
+                    <button type="submit" class="claim-btn">{{ t.claim_gift }} 🎁</button>
                 </form>
             </div>
         </div>

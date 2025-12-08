@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if is_uzbek %}Muvaffaqiyatli!{% else %}Муваффақийетли!{% endif %}</title>
+    <title>{{ t.success }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -109,18 +109,18 @@
 <body>
     <div class="container">
         <div class="icon">🎉</div>
-        <h1>{% if is_uzbek %}Tabriklaymiz!{% else %}Қуттықтаймыз!{% endif %}</h1>
+        <h1>{{ t.congratulations }}</h1>
         
         <div class="gift-info">
             <h2>{{ order.gift.name }}</h2>
-            <p><strong>{% if is_uzbek %}Buyurtma raqami:{% else %}Буйыртпа номери:{% endif %}</strong> #{{ order.id }}</p>
-            <p><strong>{% if is_uzbek %}Ism:{% else %}Аты:{% endif %}</strong> {{ order.customer_name }}</p>
-            <p><strong>{% if is_uzbek %}Telefon:{% else %}Телефон:{% endif %}</strong> {{ order.customer_phone }}</p>
+            <p><strong>{{ t.order_id }}</strong> #{{ order.id }}</p>
+            <p><strong>{{ t.name_label }}</strong> {{ order.customer_name }}</p>
+            <p><strong>{{ t.phone_label }}</strong> {{ order.customer_phone }}</p>
         </div>
 
         <div class="note">
-            <p><strong>💡 {% if is_uzbek %}Eslatma:{% else %}Ескертпе:{% endif %}</strong></p>
-            <p>{% if is_uzbek %}Sovg'angizni olish uchun tez orada siz bilan bog'lanamiz!{% else %}Совғаңызды алыў үшин тез орада сиз бенен байланысамыз!{% endif %}</p>
+            <p><strong>💡 {{ t.note }}</strong></p>
+            <p>{{ t.will_contact }}</p>
         </div>
 
         <p style="margin-top: 30px; font-size: 50px;">🎁✨🎄</p>

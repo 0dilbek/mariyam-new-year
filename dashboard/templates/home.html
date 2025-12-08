@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if is_uzbek %}Yangi yil sovg'alari{% else %}Jaña jıl sowğaları{% endif %}</title>
+    <title>{{ t.new_year_gifts }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -118,8 +118,8 @@
 
     <div class="container">
         <div class="icon">🎄</div>
-        <h1>{% if is_uzbek %}Xush kelibsiz!{% else %}Qosh keldiñiz!{% endif %}</h1>
-        <p>{% if is_uzbek %}Yangi yil sovg'alarini olish uchun QR kodni skaner qiling.{% else %}Jaña jıl sowğaların alıw úshin QR kodnı skanerlең.{% endif %}</p>
+        <h1>{{ t.welcome }}</h1>
+        <p>{{ t.scan_qr_instruction }}</p>
         <p style="margin-top: 30px; font-size: 60px;">🎁✨🎉</p>
     </div>
 
