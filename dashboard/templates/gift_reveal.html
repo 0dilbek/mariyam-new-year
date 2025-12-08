@@ -229,6 +229,17 @@
                 opacity: 0.2;
             }
         }
+
+        /* Logo Styles */
+        .gift-logo {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: auto;
+            z-index: 2;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -238,6 +249,7 @@
         <div class="instruction">{{ t.click_to_open }}</div>
         <div class="gift-box" id="giftBox">
             <div class="glow"></div>
+            <img src="{% static 'logo/logo.png' %}" alt="Logo" class="gift-logo">
             <img src="{% static 'gift.png' %}" alt="{{ t.new_year_gift }}">
             
             <!-- The Gift Message Inside -->
