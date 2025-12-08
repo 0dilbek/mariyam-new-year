@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -26,29 +26,29 @@ def scan_qr(request, token):
     qr_code.available = False
     qr_code.save()
     
-    # Hozirgi orderlar sonini olish
-    total_orders = Order.objects.count()
-    
     # Mavjud sovg'alarni order_number ga qarab filterlash
     available_gifts = Gifts.objects.filter(
-        available=True,
-        order_number__lte=total_orders
+        count__gt=0
     )
     
-    # Agar hech qanday sovg'a mavjud bo'lmasa
+
     if not available_gifts.exists():
         return render(request, 'no_gifts.html', {
             'message': 'Afsuski, hozirda sovg\'alar tugab qoldi!'
         })
-    
-    # Tasodifiy sovg'ani tanlash
-    selected_gift = random.choice(available_gifts)
-    
-    # Sovg'ani berilgan deb belgilash
-    selected_gift.available = False
+
+    total_fund = Gifts.objects.filter(count__gt=0).aggregate(total=Sum('price'))['total'] or 0
+    weights = []
+    for gift in available_gifts:
+        weight = (total_fund - gift.price + 1)  # +1 to avoid zero probability
+        weights.append(weight)
+
+    # Tasodifiy sovg'ani ehtimollar asosida tanlash
+    selected_gift = random.choices(list(available_gifts), weights=weights, k=1)[0]
+
+    selected_gift.count -= 1
     selected_gift.save()
     
-    # Sessiyaga sovg'a ma'lumotini saqlash
     request.session['gift_name'] = selected_gift.name
     request.session['gift_id'] = selected_gift.id
     
@@ -67,20 +67,15 @@ def gift_reveal(request):
     })
 
 def claim_gift(request):
-    """Foydalanuvchi ma'lumotlarini olish va buyurtma yaratish"""
     if request.method == 'POST':
         gift_id = request.session.get('gift_id')
-        customer_name = request.POST.get('customer_name')
-        customer_phone = request.POST.get('customer_phone')
         
-        if gift_id and customer_name and customer_phone:
+        if gift_id:
             gift = get_object_or_404(Gifts, id=gift_id)
             
             # Buyurtma yaratish
             order = Order.objects.create(
                 gift=gift,
-                customer_name=customer_name,
-                customer_phone=customer_phone
             )
             
             # Sessiyani tozalash
@@ -127,7 +122,8 @@ def admin_logout(request):
 def admin_dashboard(request):
     """Admin dashboard - statistika va boshqaruv"""
     total_gifts = Gifts.objects.count()
-    available_gifts = Gifts.objects.filter(available=True).count()
+    available_gifts = Gifts.objects.filter(count__gt=0).count()
+    total_gifts_count = Gifts.objects.aggregate(total=Sum('count'))['total'] or 0
     total_orders = Order.objects.count()
     total_qr_codes = QRCode.objects.count()
     available_qr_codes = QRCode.objects.filter(available=True).count()
@@ -148,7 +144,7 @@ def admin_dashboard(request):
     Order.objects.filter(id__in=order_ids, is_viewed=False).update(is_viewed=True)
     
     # Barcha sovg'alar - pagination
-    gifts_list = Gifts.objects.all().order_by('order_number')
+    gifts_list = Gifts.objects.all().order_by('-price')
     gifts_paginator = Paginator(gifts_list, 15)  # 15 per page
     gifts_page = request.GET.get('gifts_page')
     try:
@@ -172,6 +168,7 @@ def admin_dashboard(request):
     context = {
         'total_gifts': total_gifts,
         'available_gifts': available_gifts,
+        'total_gifts_count': total_gifts_count,
         'total_orders': total_orders,
         'total_qr_codes': total_qr_codes,
         'available_qr_codes': available_qr_codes,
@@ -187,11 +184,13 @@ def add_gift(request):
     """Yangi sovg'a qo'shish"""
     if request.method == 'POST':
         name = request.POST.get('name')
-        order_number = request.POST.get('order_number')
+        price = request.POST.get('price', 0)
+        count = request.POST.get('count', 1)
         
         Gifts.objects.create(
             name=name,
-            order_number=order_number
+            price=price,
+            count=count
         )
         messages.success(request, 'Sovg\'a muvaffaqiyatli qo\'shildi!')
         return redirect('admin_dashboard')
@@ -207,11 +206,14 @@ def delete_gift(request, gift_id):
     return redirect('admin_dashboard')
 
 @login_required(login_url='admin_login')
-def toggle_gift_availability(request, gift_id):
-    """Sovg'a mavjudligini o'zgartirish"""
-    gift = get_object_or_404(Gifts, id=gift_id)
-    gift.available = not gift.available
-    gift.save()
+def update_gift_count(request, gift_id):
+    """Sovg'a sonini yangilash"""
+    if request.method == 'POST':
+        gift = get_object_or_404(Gifts, id=gift_id)
+        count = int(request.POST.get('count', 0))
+        gift.count = count
+        gift.save()
+        messages.success(request, 'Sovg\'a soni yangilandi!')
     return redirect('admin_dashboard')
 
 @login_required(login_url='admin_login')

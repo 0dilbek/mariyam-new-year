@@ -155,7 +155,7 @@
         /* Add Gift Form */
         .add-gift-form {
             display: grid;
-            grid-template-columns: 2fr 1fr auto;
+            grid-template-columns: 2fr 1fr 1fr auto;
             gap: 15px;
             align-items: end;
         }
@@ -573,8 +573,8 @@
             </div>
             <div class="stat-card">
                 <div class="icon">✅</div>
-                <h3>{% if is_uzbek %}Mavjud Sovg'alar{% else %}Бар Совғалар{% endif %}</h3>
-                <div class="value">{{ available_gifts }}</div>
+                <h3>{% if is_uzbek %}Mavjud Sovg'alar Soni{% else %}Бар Совғалар Саны{% endif %}</h3>
+                <div class="value">{{ total_gifts_count }}</div>
             </div>
             <div class="stat-card">
                 <div class="icon">📦</div>
@@ -600,8 +600,12 @@
                     <input type="text" id="name" name="name" placeholder="{% if is_uzbek %}Masalan: iPhone 15 Pro{% else %}Мысалы: iPhone 15 Pro{% endif %}" required>
                 </div>
                 <div class="form-group">
-                    <label for="order_number">{% if is_uzbek %}Buyurtma raqami (chegara){% else %}Буйыртпа номери (шекара){% endif %}</label>
-                    <input type="number" id="order_number" name="order_number" placeholder="10" required>
+                    <label for="price">{% if is_uzbek %}Narxi (so'm){% else %}Баһасы (сўм){% endif %}</label>
+                    <input type="number" id="price" name="price" placeholder="5000000" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="count">{% if is_uzbek %}Soni{% else %}Саны{% endif %}</label>
+                    <input type="number" id="count" name="count" placeholder="10" min="1" required>
                 </div>
                 <button type="submit" class="btn btn-primary">➕ {% if is_uzbek %}Qo'shish{% else %}Қосыў{% endif %}</button>
             </form>
@@ -618,8 +622,8 @@
                         <tr>
                             <th>ID</th>
                             <th>{% if is_uzbek %}Nomi{% else %}Аты{% endif %}</th>
-                            <th>{% if is_uzbek %}Buyurtma raqami{% else %}Буйыртпа номери{% endif %}</th>
-                            <th>{% if is_uzbek %}Status{% else %}Статус{% endif %}</th>
+                            <th>{% if is_uzbek %}Narxi{% else %}Баһасы{% endif %}</th>
+                            <th>{% if is_uzbek %}Soni{% else %}Саны{% endif %}</th>
                             <th>{% if is_uzbek %}Amallar{% else %}Әмеллер{% endif %}</th>
                         </tr>
                     </thead>
@@ -628,26 +632,30 @@
                         <tr>
                             <td>{{ gift.id }}</td>
                             <td><strong>{{ gift.name }}</strong></td>
-                            <td>{{ gift.order_number }}</td>
+                            <td>{{ gift.price|floatformat:0 }} {% if is_uzbek %}so'm{% else %}сўм{% endif %}</td>
                             <td>
-                                {% if gift.available %}
-                                    <span class="badge badge-success">{% if is_uzbek %}Mavjud{% else %}Бар{% endif %}</span>
-                                {% else %}
-                                    <span class="badge badge-danger">{% if is_uzbek %}Berilgan{% else %}Берилген{% endif %}</span>
-                                {% endif %}
+                                <form method="POST" action="{% url 'update_gift_count' gift.id %}" style="display: flex; gap: 5px; align-items: center;">
+                                    {% csrf_token %}
+                                    <input type="number" name="count" value="{{ gift.count }}" min="0" style="width: 70px; padding: 5px; border: 2px solid rgba(255,255,255,0.3); border-radius: 5px; text-align: center;">
+                                    <button type="submit" class="btn btn-success" style="padding: 5px 10px; font-size: 11px;">{% if is_uzbek %}✓{% else %}✓{% endif %}</button>
+                                </form>
                             </td>
                             <td>
                                 <div class="actions">
-                                    <a href="{% url 'toggle_gift' gift.id %}" class="btn {% if gift.available %}btn-danger{% else %}btn-success{% endif %}">
-                                        {% if gift.available %}{% if is_uzbek %}Bekor{% else %}Бекар{% endif %}{% else %}{% if is_uzbek %}Qayta{% else %}Қайта{% endif %}{% endif %}
-                                    </a>
                                     <a href="{% url 'delete_gift' gift.id %}" class="btn btn-danger" onclick="return confirm('{% if is_uzbek %}Ishonchingiz komilmi?{% else %}Сенимлимисиз?{% endif %}')">{% if is_uzbek %}O'chirish{% else %}Өшириў{% endif %}</a>
                                 </div>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
+                            <td colspan="5" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
+                                {% if is_uzbek %}Hozircha sovg'alar yo'q. Yuqorida yangi sovg'a qo'shing!{% else %}Һәзирше совғалар жоқ. Жоқарыда жаңа совға қосың!{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
                                 {% if is_uzbek %}Hozircha sovg'alar yo'q. Yuqorida yangi sovg'a qo'shing!{% else %}Һәзирше совғалар жоқ. Жоқарыда жаңа совға қосың!{% endif %}
                             </td>
                         </tr>
@@ -686,8 +694,6 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>{% if is_uzbek %}Mijoz nomi{% else %}Мийман аты{% endif %}</th>
-                            <th>{% if is_uzbek %}Telefon{% else %}Телефон{% endif %}</th>
                             <th>{% if is_uzbek %}Sovg'a{% else %}Совға{% endif %}</th>
                             <th>{% if is_uzbek %}Sana{% else %}Күни{% endif %}</th>
                         </tr>
@@ -701,14 +707,12 @@
                                 <span class="new-badge">{% if is_uzbek %}YANGI{% else %}ЖАҢА{% endif %}</span>
                                 {% endif %}
                             </td>
-                            <td>{{ order.customer_name }}</td>
-                            <td>{{ order.customer_phone }}</td>
                             <td><strong>{{ order.gift.name }}</strong></td>
                             <td>{{ order.order_date|date:"d.m.Y H:i" }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
+                            <td colspan="3" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
                                 {% if is_uzbek %}Hozircha buyurtmalar yo'q{% else %}Һәзирше буйыртпалар жоқ{% endif %}
                             </td>
                         </tr>

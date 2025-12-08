@@ -15,7 +15,7 @@ urlpatterns = [
     path('admin-panel/', views.admin_dashboard, name='admin_dashboard'),
     path('admin-panel/add-gift/', views.add_gift, name='add_gift'),
     path('admin-panel/delete-gift/<int:gift_id>/', views.delete_gift, name='delete_gift'),
-    path('admin-panel/toggle-gift/<int:gift_id>/', views.toggle_gift_availability, name='toggle_gift'),
+    path('admin-panel/update-gift-count/<int:gift_id>/', views.update_gift_count, name='update_gift_count'),
     path('admin-panel/generate-qr/', views.generate_qr_codes, name='generate_qr'),
     path('admin-panel/delete-qr/<int:qr_id>/', views.delete_qr_code, name='delete_qr'),
 ]
