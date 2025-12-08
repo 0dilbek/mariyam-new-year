@@ -131,9 +131,6 @@ STATIC_ROOT = '/home/mariyamn/mariyam-new-year.uz/django/static'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = '/home/mariyamn/mariyam-new-year.uz/django/media'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
