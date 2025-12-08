@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views
+from . import language_views
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('scan/<str:token>/', views.scan_qr, name='scan_qr'),
     path('gift/', views.gift_reveal, name='gift_reveal'),
     path('claim/', views.claim_gift, name='claim_gift'),
+    path('change-language/', language_views.set_language, name='change_language'),
     
     # Admin Panel URLs
     path('admin-panel/login/', views.admin_login, name='admin_login'),
