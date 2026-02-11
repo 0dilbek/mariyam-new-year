@@ -10,20 +10,17 @@ import random
 
 def scan_qr(request):
     """Sovg'a berish"""
-    # IP addressni olish
     ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
     if ip_address:
         ip_address = ip_address.split(',')[0]
     else:
         ip_address = request.META.get('REMOTE_ADDR')
     
-    # Agar bu IP dan avval sovg'a olingan bo'lsa
     if Order.objects.filter(ip_address=ip_address).exists():
         return render(request, 'qr_used.html', {
             'message': 'Сиз бул сайттан аллақашан совға алыпсыз!'
         })
     
-    # Mavjud sovg'alarni filterlash
     available_gifts = Gifts.objects.filter(
         count__gt=0
     )
@@ -33,22 +30,17 @@ def scan_qr(request):
             'message': 'Afsuski, hozirda sovg\'alar tugab qoldi!'
         })
 
-    # Har bir sovg'ani count marta listga qo'shish - soni ko'p bo'lgan sovg'a ko'proq chiqadi
     gifts_pool = []
     for gift in available_gifts:
-        # Arzon sovg'aga ko'proq ehtimol, qimmatga kamroq
-        # Narxi kam bo'lsa count*10, narxi baland bo'lsa count*1
         max_price = max(float(g.price) for g in available_gifts)
         min_price = min(float(g.price) for g in available_gifts)
         price_range = max_price - min_price if max_price > min_price else 1
         
-        # Narxi pastroq bo'lsa multiplier katta (1-10 oralig'ida)
         multiplier = int(10 - (float(gift.price) - min_price) / price_range * 9)
         
         for _ in range(gift.count * multiplier):
             gifts_pool.append(gift)
     
-    # Tasodifiy birini tanlash
     selected_gift = random.choice(gifts_pool)
 
     selected_gift.count -= 1
@@ -58,7 +50,6 @@ def scan_qr(request):
     request.session['gift_id'] = selected_gift.id
     request.session['ip_address'] = ip_address
     
-    # Sovg'a sahifasiga yo'naltirish
     return redirect('gift_reveal')
 
 def gift_reveal(request):
@@ -70,11 +61,9 @@ def gift_reveal(request):
     if not gift_name or not gift_id:
         return redirect('home')
     
-    # Buyurtmani avtomatik yaratish
     gift = get_object_or_404(Gifts, id=gift_id)
     order = Order.objects.create(gift=gift, ip_address=ip_address)
     
-    # Sessiyani tozalash
     request.session.pop('gift_name', None)
     request.session.pop('gift_id', None)
     request.session.pop('ip_address', None)
@@ -91,12 +80,10 @@ def claim_gift(request):
         if gift_id:
             gift = get_object_or_404(Gifts, id=gift_id)
             
-            # Buyurtma yaratish
             order = Order.objects.create(
                 gift=gift,
             )
             
-            # Sessiyani tozalash
             request.session.pop('gift_name', None)
             request.session.pop('gift_id', None)
             
@@ -110,7 +97,6 @@ def home(request):
     """Asosiy sahifa"""
     return render(request, 'home.html')
 
-# ============= ADMIN PANEL VIEWS =============
 
 def admin_login(request):
     """Admin login sahifasi"""
