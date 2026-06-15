@@ -1,10 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if is_uzbek %}Boshqaruv Paneli{% else %}Басқарыў Панели{% endif %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>{{ t.management_panel }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/premium.css' %}">
     <style>
         * {
             margin: 0;
@@ -14,7 +16,7 @@
 
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            background: linear-gradient(135deg, #00a8c8 0%, #7adfbb 52%, #ffd166 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -33,8 +35,9 @@
         }
 
         .header h1 {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 28px;
+            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -146,8 +149,9 @@
         }
 
         .section-header h2 {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 24px;
+            font-weight: 800;
             color: #fff;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
@@ -403,7 +407,7 @@
             pointer-events: none;
         }
 
-        /* Snow Effect */
+        /* Summer Effect */
         .pagination {
             display: flex;
             justify-content: center;
@@ -440,8 +444,7 @@
             cursor: not-allowed;
         }
 
-        /* Snow Effect */
-        .snowflake {
+        .summer-particle {
             position: fixed;
             top: -10px;
             color: #fff;
@@ -534,12 +537,15 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>🎁 Басқарыў Панели</h1>
+        <div class="header-brand">
+            <img src="{% static 'logo/icon-gold-web.png' %}" alt="Mariyam Cosmetics">
+            <h1>{{ t.management_panel }}</h1>
+        </div>
         <div class="header-right">
             <div class="user-info">
                 <span>👤 {{ user.username }}</span>
             </div>
-            <a href="{% url 'admin_logout' %}" class="logout-btn">Шығыў</a>
+            <a href="{% url 'admin_logout' %}" class="logout-btn">{{ t.logout }}</a>
         </div>
     </div>
 
@@ -560,17 +566,17 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="icon">🎁</div>
-                <h3>{% if is_uzbek %}Jami Sovg'alar{% else %}Барлық Совғалар{% endif %}</h3>
+                <h3>{{ t.total_gifts }}</h3>
                 <div class="value">{{ total_gifts }}</div>
             </div>
             <div class="stat-card">
                 <div class="icon">✅</div>
-                <h3>{% if is_uzbek %}Mavjud Sovg'alar Soni{% else %}Бар Совғалар Саны{% endif %}</h3>
+                <h3>{{ t.available_gifts }}</h3>
                 <div class="value">{{ total_gifts_count }}</div>
             </div>
             <div class="stat-card">
                 <div class="icon">📦</div>
-                <h3>{% if is_uzbek %}Barcha Buyurtmalar{% else %}Барлық Буйыртпалар{% endif %}</h3>
+                <h3>{{ t.all_orders }}</h3>
                 <div class="value">{{ total_orders }}</div>
             </div>
         </div>
@@ -578,40 +584,40 @@
         <!-- Add Gift Section -->
         <div class="section">
             <div class="section-header">
-                <h2>➕ {% if is_uzbek %}Yangi Sovg'a Qo'shish{% else %}Жаңа Совға Қосыў{% endif %}</h2>
+                <h2>➕ {{ t.add_new_gift }}</h2>
             </div>
             <form method="POST" action="{% url 'add_gift' %}" class="add-gift-form">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="name">{% if is_uzbek %}Sovg'a nomi{% else %}Совға аты{% endif %}</label>
-                    <input type="text" id="name" name="name" placeholder="{% if is_uzbek %}Masalan: iPhone 15 Pro{% else %}Мысалы: iPhone 15 Pro{% endif %}" required>
+                    <label for="name">{{ t.gift_name }}</label>
+                    <input type="text" id="name" name="name" placeholder="{{ t.example_iphone }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="price">{% if is_uzbek %}Narxi (so'm){% else %}Баһасы (сўм){% endif %}</label>
+                    <label for="price">{{ t.price }} ({{ t.sum }})</label>
                     <input type="number" id="price" name="price" placeholder="5000000" step="0.01" required>
                 </div>
                 <div class="form-group">
-                    <label for="count">{% if is_uzbek %}Soni{% else %}Саны{% endif %}</label>
+                    <label for="count">{{ t.count }}</label>
                     <input type="number" id="count" name="count" placeholder="10" min="1" required>
                 </div>
-                <button type="submit" class="btn btn-primary">➕ {% if is_uzbek %}Qo'shish{% else %}Қосыў{% endif %}</button>
+                <button type="submit" class="btn btn-primary">➕ {{ t.add }}</button>
             </form>
         </div>
 
         <!-- Gifts List -->
         <div class="section">
             <div class="section-header">
-                <h2>🎁 {% if is_uzbek %}Sovg'alar Ro'yxati{% else %}Совғалар Тизими{% endif %}</h2>
+                <h2>🎁 {{ t.gifts_list }}</h2>
             </div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>{% if is_uzbek %}Nomi{% else %}Аты{% endif %}</th>
-                            <th>{% if is_uzbek %}Narxi{% else %}Баһасы{% endif %}</th>
-                            <th>{% if is_uzbek %}Soni{% else %}Саны{% endif %}</th>
-                            <th>{% if is_uzbek %}Amallar{% else %}Әмеллер{% endif %}</th>
+                            <th>{{ t.name }}</th>
+                            <th>{{ t.price }}</th>
+                            <th>{{ t.count }}</th>
+                            <th>{{ t.actions }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -619,24 +625,24 @@
                         <tr>
                             <td>{{ gift.id }}</td>
                             <td><strong>{{ gift.name }}</strong></td>
-                            <td>{{ gift.price|floatformat:0 }} {% if is_uzbek %}so'm{% else %}сўм{% endif %}</td>
+                            <td>{{ gift.price|floatformat:0 }} {{ t.sum }}</td>
                             <td>
                                 <form method="POST" action="{% url 'update_gift_count' gift.id %}" style="display: flex; gap: 5px; align-items: center;">
                                     {% csrf_token %}
                                     <input type="number" name="count" value="{{ gift.count }}" min="0" style="width: 70px; padding: 5px; border: 2px solid rgba(255,255,255,0.3); border-radius: 5px; text-align: center;">
-                                    <button type="submit" class="btn btn-success" style="padding: 5px 10px; font-size: 11px;">{% if is_uzbek %}✓{% else %}✓{% endif %}</button>
+                                    <button type="submit" class="btn btn-success" style="padding: 5px 10px; font-size: 11px;">✓</button>
                                 </form>
                             </td>
                             <td>
                                 <div class="actions">
-                                    <a href="{% url 'delete_gift' gift.id %}" class="btn btn-danger" onclick="return confirm('{% if is_uzbek %}Ishonchingiz komilmi?{% else %}Сенимлимисиз?{% endif %}')">{% if is_uzbek %}O'chirish{% else %}Өшириў{% endif %}</a>
+                                    <a href="{% url 'delete_gift' gift.id %}" class="btn btn-danger" onclick="return confirm('{{ t.are_you_sure }}')">{{ t.delete }}</a>
                                 </div>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="5" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
-                                {% if is_uzbek %}Hozircha sovg'alar yo'q. Yuqorida yangi sovg'a qo'shing!{% else %}Һәзирше совғалар жоқ. Жоқарыда жаңа совға қосың!{% endif %}
+                                {{ t.no_gifts_yet }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -667,16 +673,16 @@
         <!-- Recent Orders -->
         <div class="section">
             <div class="section-header">
-                <h2>📦 {% if is_uzbek %}So'nggi Buyurtmalar{% else %}Соңғы Буйыртпалар{% endif %}</h2>
+                <h2>📦 {{ t.recent_orders }}</h2>
             </div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Совға</th>
+                            <th>{{ t.gift }}</th>
                             <th>IP Address</th>
-                            <th>Күни</th>
+                            <th>{{ t.date }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -685,7 +691,7 @@
                             <td>
                                 #{{ order.id }}
                                 {% if not order.is_viewed %}
-                                <span class="new-badge">ЖАҢА</span>
+                                <span class="new-badge">{{ t.new }}</span>
                                 {% endif %}
                             </td>
                             <td><strong>{{ order.gift.name }}</strong></td>
@@ -695,7 +701,7 @@
                         {% empty %}
                         <tr>
                             <td colspan="4" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.6);">
-                                Һәзирше буйыртпалар жоқ
+                                {{ t.no_orders_yet }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -725,24 +731,23 @@
     </div>
 
     <script>
-        // Snow effect
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
-            snowflake.style.left = Math.random() * window.innerWidth + 'px';
-            snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
-            snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+        function createSummerParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('summer-particle');
+            particle.textContent = ['✦', '☀', '✺'][Math.floor(Math.random() * 3)];
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
+            particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            particle.style.opacity = Math.random() * 0.45 + 0.35;
             
-            document.body.appendChild(snowflake);
+            document.body.appendChild(particle);
             
             setTimeout(() => {
-                snowflake.remove();
+                particle.remove();
             }, 10000);
         }
 
-        setInterval(createSnowflake, 200);
+        setInterval(createSummerParticle, 260);
     </script>
 </body>
 </html>

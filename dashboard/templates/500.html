@@ -1,10 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500 - Server Xatosi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>500 - Ошибка сервера</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/premium.css' %}">
     <style>
         * {
             margin: 0;
@@ -13,13 +15,11 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            background: linear-gradient(135deg, #00a8c8 0%, #7adfbb 52%, #ffd166 100%);
             font-family: 'Roboto', sans-serif;
             overflow: hidden;
         }
@@ -29,75 +29,35 @@
             color: white;
             z-index: 1;
             padding: 40px 20px;
-            max-width: 600px;
+            max-width: 620px;
         }
 
         .error-code {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 120px;
+            font-weight: 800;
             margin-bottom: 20px;
-            color: #ff6b6b;
-            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            color: #ef476f;
+            text-shadow: 0 8px 28px rgba(0, 90, 105, 0.28);
         }
 
         h1 {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 36px;
+            font-weight: 800;
             margin-bottom: 20px;
-            color: #fff;
         }
 
         p {
             font-size: 18px;
             margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.92);
             line-height: 1.6;
         }
 
         .icon {
             font-size: 80px;
             margin-bottom: 20px;
-            animation: shake 1s ease-in-out infinite;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s;
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-            margin: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary:hover {
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
         }
 
         .buttons {
@@ -107,8 +67,29 @@
             flex-wrap: wrap;
         }
 
-        /* Snow Effect */
-        .snowflake {
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ef476f 0%, #ff6b6b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 24px rgba(239, 71, 111, 0.28);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #06a77d 0%, #008fa8 100%);
+            box-shadow: 0 10px 24px rgba(0, 143, 168, 0.28);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .summer-particle {
             position: fixed;
             top: -10px;
             color: white;
@@ -125,41 +106,33 @@
 </head>
 <body>
     <div class="container">
-        <div class="icon">⚠️</div>
+        <img src="{% static 'logo/icon-gold-web.png' %}" alt="Mariyam Cosmetics" class="brand-logo-small">
         <div class="error-code">500</div>
-        <h1>Server Xatosi</h1>
-        <p>
-            Kechirasiz, serverde texnik nosozlik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring yoki 
-            administrator bilan bog'laning.
-        </p>
+        <h1>Ошибка сервера</h1>
+        <p>Извините, на сервере произошла техническая ошибка. Попробуйте позже или обратитесь к администратору.</p>
         <div class="buttons">
-            <a href="javascript:history.back()" class="btn">
-                ← Orqaga
-            </a>
-            <a href="/" class="btn btn-secondary">
-                🏠 Bosh Sahifa
-            </a>
+            <a href="javascript:history.back()" class="btn">← Назад</a>
+            <a href="/" class="btn btn-secondary">🏠 На главную</a>
         </div>
     </div>
 
     <script>
-        // Snow Effect
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-            snowflake.textContent = '❄';
-            snowflake.style.left = Math.random() * window.innerWidth + 'px';
-            snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            snowflake.style.opacity = Math.random();
-            snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
-            document.body.appendChild(snowflake);
+        function createSummerParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'summer-particle';
+            particle.textContent = ['✦', '☀', '✺'][Math.floor(Math.random() * 3)];
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            particle.style.opacity = Math.random() * 0.45 + 0.35;
+            particle.style.fontSize = (Math.random() * 10 + 10) + 'px';
+            document.body.appendChild(particle);
 
             setTimeout(() => {
-                snowflake.remove();
+                particle.remove();
             }, 5000);
         }
 
-        setInterval(createSnowflake, 200);
+        setInterval(createSummerParticle, 260);
     </script>
 </body>
 </html>

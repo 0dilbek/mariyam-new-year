@@ -1,0 +1,24 @@
+[Unit]
+Description=Mariyam New Year Campaign (Gunicorn)
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/mariyam-new-year
+EnvironmentFile=/home/mariyam-new-year/.env
+ExecStart=/home/mariyam-new-year/myenv/bin/gunicorn \
+    --workers 3 \
+    --bind unix:/run/mariyam-new-year.sock \
+    --timeout 120 \
+    --access-logfile /var/log/mariyam-new-year/access.log \
+    --error-logfile /var/log/mariyam-new-year/error.log \
+    config.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

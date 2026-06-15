@@ -1,10 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ t.admin_login }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/premium.css' %}">
     <style>
         * {
             margin: 0;
@@ -14,7 +16,7 @@
 
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            background: linear-gradient(135deg, #00a8c8 0%, #7adfbb 52%, #ffd166 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -63,9 +65,10 @@
         }
 
         .logo h1 {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-weight: 800;
+            background: linear-gradient(135deg, #008fa8 0%, #ef476f 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 5px;
@@ -100,14 +103,14 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #008fa8;
+            box-shadow: 0 0 0 3px rgba(0, 143, 168, 0.1);
         }
 
         .login-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06a77d 0%, #008fa8 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -120,7 +123,7 @@
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 143, 168, 0.35);
         }
 
         .login-btn:active {
@@ -137,8 +140,7 @@
             border-left: 4px solid #c33;
         }
 
-        /* Snow Effect */
-        .snowflake {
+        .summer-particle {
             position: absolute;
             top: -10px;
             color: #fff;
@@ -160,58 +162,12 @@
             }
         }
 
-        .language-switcher {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .language-switcher form {
-            display: flex;
-            gap: 10px;
-            background: rgba(255,255,255,0.15);
-            padding: 10px 15px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .language-switcher select {
-            background: rgba(255,255,255,0.9);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .language-switcher button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-    <div class="language-switcher">
-        <form action="{% url 'set_language' %}" method="post">
-            {% csrf_token %}
-            <input name="next" type="hidden" value="{{ request.path }}">
-            <select name="language">
-                <option value="uz" {% if current_language == 'uz' %}selected{% endif %}>O'zbekcha</option>
-                <option value="kaa" {% if current_language == 'kaa' %}selected{% endif %}>Qaraqalpaqsha</option>
-            </select>
-            <button type="submit">OK</button>
-        </form>
-    </div>
-
     <div class="login-container">
         <div class="logo">
-            <div class="icon">🎁</div>
+            <img src="{% static 'logo/icon-gold-web.png' %}" alt="Mariyam Cosmetics" class="brand-logo-small">
             <h1>{{ t.admin_panel }}</h1>
             <p>{{ t.new_year_system }}</p>
         </div>
@@ -241,24 +197,23 @@
     </div>
 
     <script>
-        // Snow Effect
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
-            snowflake.style.left = Math.random() * 100 + 'vw';
-            snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
-            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
-            snowflake.style.fontSize = Math.random() * 15 + 10 + 'px';
+        function createSummerParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('summer-particle');
+            particle.textContent = ['✦', '☀', '✺'][Math.floor(Math.random() * 3)];
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = Math.random() * 3 + 5 + 's';
+            particle.style.opacity = Math.random() * 0.45 + 0.35;
+            particle.style.fontSize = Math.random() * 15 + 10 + 'px';
             
-            document.body.appendChild(snowflake);
+            document.body.appendChild(particle);
 
             setTimeout(() => {
-                snowflake.remove();
+                particle.remove();
             }, 8000);
         }
 
-        setInterval(createSnowflake, 200);
+        setInterval(createSummerParticle, 260);
     </script>
 </body>
 </html>

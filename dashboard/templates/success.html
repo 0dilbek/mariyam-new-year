@@ -1,10 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ t.success }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/premium.css' %}">
     <style>
         body {
             margin: 0;
@@ -13,7 +15,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            background: linear-gradient(135deg, #00a8c8 0%, #7adfbb 52%, #ffd166 100%);
             font-family: 'Roboto', sans-serif;
             overflow: hidden;
         }
@@ -30,8 +32,9 @@
         }
 
         h1 {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 42px;
+            font-weight: 800;
             margin-bottom: 20px;
             text-shadow: 0 0 20px rgba(255,215,0,0.8);
             color: #ffd700;
@@ -81,8 +84,7 @@
             border: 2px solid rgba(255,215,0,0.4);
         }
 
-        /* Snow Effect */
-        .snowflake {
+        .summer-particle {
             position: absolute;
             top: -10px;
             color: #fff;
@@ -108,7 +110,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="icon">🎉</div>
+        <img src="{% static 'logo/icon-gold-web.png' %}" alt="Mariyam Cosmetics" class="brand-logo-small">
         <h1>{{ t.congratulations }}</h1>
         
         <div class="gift-info">
@@ -121,7 +123,7 @@
             <p>{{ t.will_contact }}</p>
         </div>
 
-        <p style="margin-top: 30px; font-size: 50px;">🎁✨🎄</p>
+        <p style="margin-top: 30px; font-size: 50px;">🎁✨☀️</p>
     </div>
 
     <script>
@@ -151,24 +153,23 @@
 
         celebrate();
         
-        // Snow Effect
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
-            snowflake.style.left = Math.random() * 100 + 'vw';
-            snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
-            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
-            snowflake.style.fontSize = Math.random() * 15 + 10 + 'px';
+        function createSummerParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('summer-particle');
+            particle.textContent = ['✦', '☀', '✺'][Math.floor(Math.random() * 3)];
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = Math.random() * 3 + 5 + 's';
+            particle.style.opacity = Math.random() * 0.45 + 0.35;
+            particle.style.fontSize = Math.random() * 15 + 10 + 'px';
             
-            document.body.appendChild(snowflake);
+            document.body.appendChild(particle);
 
             setTimeout(() => {
-                snowflake.remove();
+                particle.remove();
             }, 8000);
         }
 
-        setInterval(createSnowflake, 200);
+        setInterval(createSummerParticle, 260);
     </script>
 </body>
 </html>

@@ -1,10 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - {% if is_uzbek %}Sahifa Topilmadi{% else %}Bet Tabılmadı{% endif %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>404 - Страница не найдена</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/premium.css' %}">
     <style>
         * {
             margin: 0;
@@ -13,13 +15,11 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            background: linear-gradient(135deg, #00a8c8 0%, #7adfbb 52%, #ffd166 100%);
             font-family: 'Roboto', sans-serif;
             overflow: hidden;
         }
@@ -29,33 +29,28 @@
             color: white;
             z-index: 1;
             padding: 40px 20px;
-            max-width: 600px;
+            max-width: 620px;
         }
 
         .error-code {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 120px;
+            font-weight: 800;
             margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-            50% { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8); }
+            text-shadow: 0 8px 28px rgba(0, 90, 105, 0.28);
         }
 
         h1 {
-            font-family: 'Mountains of Christmas', cursive;
+            font-family: 'Montserrat', sans-serif;
             font-size: 36px;
+            font-weight: 800;
             margin-bottom: 20px;
-            color: #fff;
         }
 
         p {
             font-size: 18px;
             margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.92);
             line-height: 1.6;
         }
 
@@ -67,29 +62,28 @@
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-18px); }
         }
 
         .btn {
             display: inline-block;
             padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #06a77d 0%, #008fa8 100%);
             color: white;
             text-decoration: none;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 16px;
             transition: all 0.3s;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 24px rgba(0, 143, 168, 0.28);
         }
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 14px 32px rgba(0, 143, 168, 0.38);
         }
 
-        /* Snow Effect */
-        .snowflake {
+        .summer-particle {
             position: fixed;
             top: -10px;
             color: white;
@@ -106,39 +100,30 @@
 </head>
 <body>
     <div class="container">
-        <div class="icon">🎄</div>
+        <img src="{% static 'logo/icon-gold-web.png' %}" alt="Mariyam Cosmetics" class="brand-logo-small">
         <div class="error-code">404</div>
-        <h1>{% if is_uzbek %}Sahifa Topilmadi{% else %}Bet Tabılmadı{% endif %}</h1>
-        <p>
-            {% if is_uzbek %}
-                Kechirasiz, siz qidirayotgan sahifa topilmadi. Sahifa o'chirilgan yoki URL manzil noto'g'ri kiritilgan bo'lishi mumkin.
-            {% else %}
-                Keshiresiz, siz izdegen bet tabılmadı. Bet óshirilgen yamasa URL mánzil nádurıs kirgiziligen bolıwı múmkin.
-            {% endif %}
-        </p>
-        <a href="/" class="btn">
-            🏠 {% if is_uzbek %}Bosh Sahifa{% else %}Bas Bet{% endif %}
-        </a>
+        <h1>Страница не найдена</h1>
+        <p>Извините, страница, которую вы ищете, не найдена. Возможно, ссылка устарела или адрес введен неверно.</p>
+        <a href="/" class="btn">🏠 На главную</a>
     </div>
 
     <script>
-        // Snow Effect
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-            snowflake.textContent = '❄';
-            snowflake.style.left = Math.random() * window.innerWidth + 'px';
-            snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            snowflake.style.opacity = Math.random();
-            snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
-            document.body.appendChild(snowflake);
+        function createSummerParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'summer-particle';
+            particle.textContent = ['✦', '☀', '✺'][Math.floor(Math.random() * 3)];
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            particle.style.opacity = Math.random() * 0.45 + 0.35;
+            particle.style.fontSize = (Math.random() * 10 + 10) + 'px';
+            document.body.appendChild(particle);
 
             setTimeout(() => {
-                snowflake.remove();
+                particle.remove();
             }, 5000);
         }
 
-        setInterval(createSnowflake, 200);
+        setInterval(createSummerParticle, 260);
     </script>
 </body>
 </html>

@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
+from importlib.util import find_spec
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +22,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jsg(nehiyt^6lvwn*98p=m$d!$!so71$wi#y=fs@&qoi&n$ihq'
+SECRET_KEY = os.getenv(
+    'SECRET_KEY',
+    'django-insecure-jsg(nehiyt^6lvwn*98p=m$d!$!so71$wi#y=fs@&qoi&n$ihq'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DJANGO_DEBUG', os.getenv('DEBUG', 'true')).lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = ["mariyam-new-year.uz", "www.mariyam-new-year.uz", "127.0.0.1"]
+ALLOWED_HOSTS = os.getenv(
+    'DJANGO_ALLOWED_HOSTS',
+    'mariyam-new-year.uz,www.mariyam-new-year.uz,127.0.0.1,localhost'
+).split(',')
+
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'DJANGO_CSRF_TRUSTED_ORIGINS',
+    'http://127.0.0.1:8000,http://127.0.0.1:8001,http://localhost:8000,http://localhost:8001,http://mariyam-new-year.uz,http://www.mariyam-new-year.uz'
+).split(',')
+CSRF_FAILURE_VIEW = 'dashboard.views.csrf_failure'
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 
 
 # Application definition
@@ -42,7 +58,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,7 +67,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if find_spec('whitenoise'):
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'config.urls'
 
@@ -108,11 +125,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'uz'
+LANGUAGE_CODE = 'ru'
 
 LANGUAGES = [
-    ('uz', 'O\'zbekcha'),
-    ('kaa', 'Qaraqalpaqsha'),
+    ('ru', 'Русский'),
 ]
 
 TIME_ZONE = 'Asia/Tashkent'
@@ -126,10 +142,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = '/home/mariyamn/mariyam-new-year.uz/django/static_files',
-STATIC_ROOT = '/home/mariyamn/mariyam-new-year.uz/django/static'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT', BASE_DIR / 'staticfiles')
 MEDIA_URL = 'media/'
-MEDIA_ROOT = '/home/mariyamn/public_html/media'
+MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT', BASE_DIR / 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

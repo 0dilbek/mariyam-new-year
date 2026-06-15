@@ -18,7 +18,7 @@ def scan_qr(request):
     
     if Order.objects.filter(ip_address=ip_address).exists():
         return render(request, 'qr_used.html', {
-            'message': 'Сиз бул сайттан аллақашан совға алыпсыз!'
+            'message': 'Вы уже получили подарок по этой акции!'
         })
     
     available_gifts = Gifts.objects.filter(
@@ -27,7 +27,7 @@ def scan_qr(request):
     
     if not available_gifts.exists():
         return render(request, 'no_gifts.html', {
-            'message': 'Afsuski, hozirda sovg\'alar tugab qoldi!'
+            'message': 'К сожалению, подарки уже закончились!'
         })
 
     gifts_pool = []
@@ -98,6 +98,14 @@ def home(request):
     return render(request, 'home.html')
 
 
+def csrf_failure(request, reason=''):
+    if request.path.startswith('/admin-panel/'):
+        if request.user.is_authenticated:
+            return redirect('admin_dashboard')
+        return redirect('admin_login')
+    return redirect('home')
+
+
 def admin_login(request):
     """Admin login sahifasi"""
     if request.user.is_authenticated:
@@ -113,7 +121,7 @@ def admin_login(request):
             login(request, user)
             return redirect('admin_dashboard')
         else:
-            messages.error(request, 'Login yoki parol noto\'g\'ri!')
+            messages.error(request, 'Неверный логин или пароль!')
     
     return render(request, 'admin_login.html')
 
@@ -169,7 +177,7 @@ def admin_dashboard(request):
 
 @login_required(login_url='admin_login')
 def add_gift(request):
-    """Yangi sovg'a qo'shish"""
+    """Add a new gift."""
     if request.method == 'POST':
         name = request.POST.get('name')
         price = request.POST.get('price', 0)
@@ -180,28 +188,28 @@ def add_gift(request):
             price=price,
             count=count
         )
-        messages.success(request, 'Sovg\'a muvaffaqiyatli qo\'shildi!')
+        messages.success(request, 'Подарок успешно добавлен!')
         return redirect('admin_dashboard')
     
     return redirect('admin_dashboard')
 
 @login_required(login_url='admin_login')
 def delete_gift(request, gift_id):
-    """Sovg'ani o'chirish"""
+    """Delete a gift."""
     gift = get_object_or_404(Gifts, id=gift_id)
     gift.delete()
-    messages.success(request, 'Sovg\'a o\'chirildi!')
+    messages.success(request, 'Подарок удален!')
     return redirect('admin_dashboard')
 
 @login_required(login_url='admin_login')
 def update_gift_count(request, gift_id):
-    """Sovg'a sonini yangilash"""
+    """Update gift count."""
     if request.method == 'POST':
         gift = get_object_or_404(Gifts, id=gift_id)
         count = int(request.POST.get('count', 0))
         gift.count = count
         gift.save()
-        messages.success(request, 'Sovg\'a soni yangilandi!')
+        messages.success(request, 'Количество подарков обновлено!')
     return redirect('admin_dashboard')
 
 
@@ -217,5 +225,5 @@ def custom_500(request):
 
 
 def custom_403(request, exception):
-    """403 - Ruxsat yo'q"""
+    """403 - Forbidden."""
     return render(request, '403.html', status=403)
